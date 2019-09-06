@@ -1,60 +1,27 @@
-var port = process.env.PORT || 3000,
-    http = require('http'),
-    fs = require('fs');
+//eshint jsversion 6
 
-var app = http.createServer(function (req, res) {
-  if (req.url.indexOf('/img') != -1) {
-    var filePath = req.url.split('/img')[1];
-    fs.readFile(__dirname + '/public/img' + filePath, function (err, data) {
-      if (err) {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('Error 404: Resource not found.');
-        console.log(err);
-      } else {
-        res.writeHead(200, {'Content-Type': 'image/svg+xml'});
-        res.write(data);
-      }  
-      res.end();
-    });
-  } else if (req.url.indexOf('/js') != -1) {
-    var filePath = req.url.split('/js')[1];
-    fs.readFile(__dirname + '/public/js' + filePath, function (err, data) {
-      if (err) {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('Error 404: Resource not found.');
-        console.log(err);
-      } else {
-        res.writeHead(200, {'Content-Type': 'text/javascript'});
-        res.write(data);
-      }  
-      res.end();
-    });
-  } else if(req.url.indexOf('/css') != -1) {
-    var filePath = req.url.split('/css')[1];
-    fs.readFile(__dirname + '/public/css' + filePath, function (err, data) {
-      if (err) {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('Error 404: Resource not found.');
-        console.log(err);
-      } else {
-        res.writeHead(200, {'Content-Type': 'text/css'});
-        res.write(data);
-      }
-      res.end();
-    });
-  } else {
-    fs.readFile(__dirname + '/public/index.html', function (err, data) {
-      if (err) {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('Error 404: Resource not found.');
-        console.log(err);
-      } else {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
-      }
-      res.end();
-    });
-  }
-}).listen(port, '0.0.0.0');
+const express = require('express');
+const ejs = require('ejs');
+const bodyParser = require('body-parser');
+const app = express();
 
-module.exports = app;
+app.set('view engine','ejs');
+
+const languages = [
+      {name : "Javascript", image: "https://img.icons8.com/nolan/2x/js.png"},
+      {name : "Python", image: "https://img.icons8.com/color/2x/python.png"},
+      {name : "Swift", image: "https://img.icons8.com/nolan/2x/swift-payment-system.png" }
+
+];
+
+app.get('/',function(req,res){
+  res.render('landing');
+});
+
+app.get('/languages',function(req,res){
+  res.render('languages',{languages:languages});
+})
+
+app.listen(3000,function(){
+  console.log("Server has started!");
+});
