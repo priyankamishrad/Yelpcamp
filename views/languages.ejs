@@ -1,11 +1,33 @@
-<h1> Languages page</h1>
+<% include ./partials/header %>
 
-<div>
-    <% languages.forEach(function(i) { %>
-        <div>
-            <h4><%= i.name %></h4>
-            <img src = "<%= i.image %>" > 
+<div class = "container">
+
+
+    <header class = "jumbotron text-center">
+        <div class = "container">
+            <h1> Languages page</h1>
+            <p> 2019's most popular programming languages</p>
+
+            <button type = "btn" class = "btn btn-lg btn-primary">
+                <p><a style= "color:black" href = "compose.ejs">Add new language</a></p>
+            </button>
         </div>
-    <% }); %>
+    </header>
 
+    <!--organize the lang icons in rows-->
+        <div class = "row text-center" style = "display:flex; flex-wrap:wrap;">
+            <% languages.forEach(function(i) { %>
+                <div class = "col-md-4 col-sm-6">
+                    <div class ="thumbnail">
+                        <img src = "<%= i.image %>">
+                        <div class = "caption">
+                            <h4><%= i.name %></h4>
+                        </div>
+                    </div> 
+                </div>
+            <% }); %>
+        </div>
+    
 </div>
+
+<% include ./partials/footer %>
