@@ -1,0 +1,36 @@
+<% include ./partials/header %>
+
+<div class = "container">
+    <h1 class = "text-center"> Languages page</h1>
+    <div class = "row">
+        <div style = "width:30%; margin: 25px auto">
+            <form method = "post" action = "#">
+            <div class="form-group">
+                <input type="text" class="form-control" name = "newlang" id="newlang" aria-describedby="emailHelp" placeholder="Enter Language">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name = "newimg" id="newimg" placeholder="Enter image URL">
+            </div>
+
+            <div class="form-group">
+                <textarea class="form-control" name="newdesc" rows="3"></textarea>
+            </div>
+
+            <div class = "form-group">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+            
+            </form>
+
+            <a href = "/languages"> <<< Go Back</a>
+        </div>
+        
+    </div>
+    
+
+    
+
+</div>
+
+
+<% include ./partials/footer %>
