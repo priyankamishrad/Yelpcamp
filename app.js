@@ -23,10 +23,13 @@ const langSchema = new mongoose.Schema({
 const Language = mongoose.model("Language",langSchema);
 
 
+//Setting up routes
+//Landing page
 app.get('/',function(req,res){
   res.render('landing');
 });
 
+//Languages page
 app.get('/languages',function(req,res){
   //get languages from the database
   Language.find({},function(err,allLangs){
@@ -41,10 +44,12 @@ app.get('/languages',function(req,res){
   
 });
 
+//New form page 
 app.get("/languages/new", function(req,res){
   res.render('new');
 });
 
+//Post data from form
 app.post("/languages/new", function(req,res){
     let addLang = (req.body.newlang);
     let img = (req.body.newimg);
@@ -69,6 +74,7 @@ app.post("/languages/new", function(req,res){
     
 });
 
+//display specific language page
 app.get("/languages/:id",function(req,res){
   //capture the id
   //let paramsId = req.params.id;
