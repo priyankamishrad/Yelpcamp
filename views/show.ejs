@@ -1,1 +1,15 @@
-<h1>This is the show page!</h1>
+<% include ./partials/header %>
+
+
+
+
+<div class = "container text-center">
+    <h1 class = "text-center"><%= foundLang.name %></h1>
+    <img src = "<%= foundLang.image%>">
+    <p> <strong>Author:</strong> <%=foundLang.author%></p>
+    <p><%= foundLang.desc %></p>
+    <a href = "/languages"> <<< Go Back</a>
+
+        
+</div>
+<% include ./partials/footer %>

@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const langSchema = new mongoose.Schema({
     name: String,
     image: String,
-    description: String
+    author: String,
+    desc : String
 });
 
 //set up model
@@ -47,10 +48,13 @@ app.get("/languages/new", function(req,res){
 app.post("/languages/new", function(req,res){
     let addLang = (req.body.newlang);
     let img = (req.body.newimg);
+    let auth = (req.body.newauth);
     let desc = (req.body.newdesc);
+  
     let newLang = {
       name : addLang,
       image : img,
+      author : auth,
       desc : desc
     };
 
@@ -66,7 +70,18 @@ app.post("/languages/new", function(req,res){
 });
 
 app.get("/languages/:id",function(req,res){
-  res.render('show');
+  //capture the id
+  //let paramsId = req.params.id;
+  Language.findById(req.params.id,function(err,foundLang){
+      if(err) {
+        console.log(err);
+      } else {
+        res.render('show', {foundLang: foundLang});
+
+      }
+  });
+
+//console.log(paramsId);
 });
 
 app.listen(3000,function(){
