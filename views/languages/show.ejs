@@ -1,0 +1,68 @@
+<% include ../partials/header %>
+
+<div class = "container">
+    <div class = "row">
+        <div class = "col-md-3">
+            <p class = "lead">YelpLang</p>
+            <div class = "list-group">
+                <li class = "list-group-item active">Info 1</li>
+                <li class = "list-group-item">Info 2</li>
+                <li class = "list-group-item">Info 3</li>
+            </div>
+        </div>
+
+        <div class = "col-md-9">
+            <h2><a><%= foundLang.name %></a></h4>
+            <div class = "thumbnail">
+                <img class = "responsive" src = "<%= foundLang.image %>">
+                <div class = "caption">
+                    <h4 class = "float-right"> 2/5</h4>
+                    
+                    <p><%= foundLang.desc %></p>
+                </div>
+            </div>
+
+
+            
+            <hr>
+
+            <div class = "well">
+                <div class = "text-right">
+                    <button class = "btn btn-small btn-success"><a style = "color:white" href = "/languages/<%= foundLang._id%>/comments/new/">Leave Review</a></button>
+                </div>
+                <% foundLang.comments.forEach(function(comment){ %>
+                    <div class =  "row">
+                        <div class = "col-md-12">
+                            <strong><%= comment.author %></strong>
+                            <span class = "float-right">10 days ago</span>
+                            <p><%=comment.text %></p>
+                        </div>
+                    </div>     
+                    <% }) %>
+            </div>   
+        </div>
+    </div>
+ </div>  
+
+
+
+
+
+
+<!--
+    <h1 class = "text-center"><%= foundLang.name %></h1>
+    <img src = "<%= foundLang.image%>">
+    <p> <strong>Author:</strong> <%=foundLang.author%></p>
+    <p><%= foundLang.desc %></p>-->
+
+    
+
+
+    
+
+
+    <a href = "/languages"> <<< Go Back</a>
+
+        
+</div>
+<% include ../partials/footer %>

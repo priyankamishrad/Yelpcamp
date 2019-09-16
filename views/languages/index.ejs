@@ -1,4 +1,4 @@
-<% include ./partials/header %>
+<% include ../partials/header %>
 
 
 
@@ -20,7 +20,7 @@
     <!--organize the lang icons in rows-->
         <div class = "row text-center" style = "display:flex; flex-wrap:wrap;">
             <% languages.forEach(function(i) { %>
-                <div class = "col-md-4 col-sm-6">
+                <div class = "col-md-3 col-sm-6">
                     <div class ="thumbnail">
                         <img src = "<%= i.image %>">
                         <div class = "caption">
@@ -34,4 +34,4 @@
     
 </div>
 
-<% include ./partials/footer %>
+<% include ../partials/footer %>
