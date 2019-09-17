@@ -1,13 +1,15 @@
 //eshint jsversion 6
 
-const express = require('express'),
-      ejs = require('ejs'),
-      bodyParser = require('body-parser'),
-      mongoose = require('mongoose'),
-      Language = require('./models/languages'),
-      seedDB = require('./seeds'),
-      Comment = require('./models/comment'),
-      // User = require('./models/users'),
+const express     = require('express'),
+      ejs         = require('ejs'),
+      bodyParser  = require('body-parser'),
+      mongoose    = require('mongoose'),
+      Language    = require('./models/languages'),
+      seedDB      = require('./seeds'),
+      Comment     = require('./models/comment'),
+      passport    = require('passport'),
+      LocalStrategy = require('passport-local'),
+      User = require('./models/user'),
       app = express();
 
 seedDB();
@@ -17,7 +19,10 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
+//=========================
 //Setting up routes
+//=========================
+
 //Landing page
 app.get('/',function(req,res){
   res.render('landing');
@@ -33,12 +38,10 @@ app.get('/languages',function(req,res){
       console.log(allLangs);
       res.render('languages/index',{languages:allLangs});
     }
-  });
-
-  
+  });  
 });
 
-//New form page 
+//New language page 
 app.get("/languages/new", function(req,res){
   res.render('languages/new');
 });
@@ -68,23 +71,16 @@ app.post("/languages/new", function(req,res){
     
 });
 
-
-//display specific language page
+//display sngle language page
 app.get("/languages/:id",function(req,res){
-  //capture the id
   let paramsId = req.params.id;
-  //console.log(paramsId);
   Language.findById(paramsId).populate('comments').exec(function(err,foundLang){
       if(err) {
         console.log(err);
       } else {
-
         res.render('languages/show', {foundLang : foundLang});
-
       }
   });
-
-//console.log(paramsId);
 });
 
 
@@ -95,7 +91,7 @@ app.get("/languages/:id",function(req,res){
 //display the route for creating new forms related to the specifc lang.
 app.get("/languages/:id/comments/new",function(req,res){
 
-  //find campground by Id
+  //find language by Id
   Language.findById(req.params.id, function(err,found) {
     if(err) {
       console.log(err);
@@ -124,21 +120,7 @@ app.post("/languages/:id/comments/",function(req,res){
       });
     }
   });
-  //create new comment
-  //connect new comment to language
-  //redirect lanuage to show page
-  //res.redirect("/languages/:id");
 });
-
-
-
-
-
-
-
-
-
-
 
 //==================================
 //LISTENING TO THE SERVER
