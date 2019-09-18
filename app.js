@@ -19,6 +19,17 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
+//PASSPORT CONFIGURATION
+app.use(require('express-session')({
+  secret : "Neil and Aariya are always the cutest",
+  resave : false,
+  saveUninitialized : false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 //=========================
 //Setting up routes
 //=========================
@@ -89,7 +100,7 @@ app.get("/languages/:id",function(req,res){
 //==================================
 
 //display the route for creating new forms related to the specifc lang.
-app.get("/languages/:id/comments/new",function(req,res){
+app.get("/languages/:id/comments/new",isLoggedIn,function(req,res){
 
   //find language by Id
   Language.findById(req.params.id, function(err,found) {
@@ -101,7 +112,7 @@ app.get("/languages/:id/comments/new",function(req,res){
   });
 });
 
-app.post("/languages/:id/comments/",function(req,res){
+app.post("/languages/:id/comments/",isLoggedIn,function(req,res){
   //look up language using id
   const id = req.params.id;
   Language.findById(id,function(err,corrLang){
@@ -121,6 +132,55 @@ app.post("/languages/:id/comments/",function(req,res){
     }
   });
 });
+
+//==================================
+//AUTH ROUTES
+//==================================
+//show register form
+app.get("/register",function(req,res){
+  res.render('register');
+});
+
+app.post("/register",function(req,res){
+  const newUser = new User({username: req.body.username});
+  User.register(newUser, req.body.password,function(err,user){
+    if(err) {
+      console.log(err);
+      return res.render('register');
+    }
+    passport.authenticate("local")(req,res,function(){
+      res.redirect("/languages");
+    });
+  });
+})
+
+//show login form
+app.get("/login",function(req,res){
+  res.render('login');
+});
+
+app.post("/login", passport.authenticate("local",
+{
+  successRedirect : "/languages",
+  failureRedirect: "/login"
+}),function(req,res){
+
+});
+
+//logic route
+app.get("/logout",function(req,res){
+  req.logout();
+  res.redirect("/languages");
+});
+
+function isLoggedIn(req,res,next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
+
+
 
 //==================================
 //LISTENING TO THE SERVER
