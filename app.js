@@ -1,13 +1,15 @@
 //eshint jsversion 6
 
-const express = require('express'),
-      ejs = require('ejs'),
-      bodyParser = require('body-parser'),
-      mongoose = require('mongoose'),
-      Language = require('./models/languages'),
-      seedDB = require('./seeds'),
-      Comment = require('./models/comment'),
-      // User = require('./models/users'),
+const express     = require('express'),
+      ejs         = require('ejs'),
+      bodyParser  = require('body-parser'),
+      mongoose    = require('mongoose'),
+      Language    = require('./models/languages'),
+      seedDB      = require('./seeds'),
+      Comment     = require('./models/comment'),
+      passport    = require('passport'),
+      LocalStrategy = require('passport-local'),
+      User = require('./models/user'),
       app = express();
 
 seedDB();
@@ -17,7 +19,21 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
+//PASSPORT CONFIGURATION
+app.use(require('express-session')({
+  secret : "Neil and Aariya are always the cutest",
+  resave : false,
+  saveUninitialized : false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+//=========================
 //Setting up routes
+//=========================
+
 //Landing page
 app.get('/',function(req,res){
   res.render('landing');
@@ -33,12 +49,10 @@ app.get('/languages',function(req,res){
       console.log(allLangs);
       res.render('languages/index',{languages:allLangs});
     }
-  });
-
-  
+  });  
 });
 
-//New form page 
+//New language page 
 app.get("/languages/new", function(req,res){
   res.render('languages/new');
 });
@@ -68,23 +82,16 @@ app.post("/languages/new", function(req,res){
     
 });
 
-
-//display specific language page
+//display sngle language page
 app.get("/languages/:id",function(req,res){
-  //capture the id
   let paramsId = req.params.id;
-  //console.log(paramsId);
   Language.findById(paramsId).populate('comments').exec(function(err,foundLang){
       if(err) {
         console.log(err);
       } else {
-
         res.render('languages/show', {foundLang : foundLang});
-
       }
   });
-
-//console.log(paramsId);
 });
 
 
@@ -93,9 +100,9 @@ app.get("/languages/:id",function(req,res){
 //==================================
 
 //display the route for creating new forms related to the specifc lang.
-app.get("/languages/:id/comments/new",function(req,res){
+app.get("/languages/:id/comments/new",isLoggedIn,function(req,res){
 
-  //find campground by Id
+  //find language by Id
   Language.findById(req.params.id, function(err,found) {
     if(err) {
       console.log(err);
@@ -105,7 +112,7 @@ app.get("/languages/:id/comments/new",function(req,res){
   });
 });
 
-app.post("/languages/:id/comments/",function(req,res){
+app.post("/languages/:id/comments/",isLoggedIn,function(req,res){
   //look up language using id
   const id = req.params.id;
   Language.findById(id,function(err,corrLang){
@@ -124,19 +131,54 @@ app.post("/languages/:id/comments/",function(req,res){
       });
     }
   });
-  //create new comment
-  //connect new comment to language
-  //redirect lanuage to show page
-  //res.redirect("/languages/:id");
 });
 
+//==================================
+//AUTH ROUTES
+//==================================
+//show register form
+app.get("/register",function(req,res){
+  res.render('register');
+});
 
+app.post("/register",function(req,res){
+  const newUser = new User({username: req.body.username});
+  User.register(newUser, req.body.password,function(err,user){
+    if(err) {
+      console.log(err);
+      return res.render('register');
+    }
+    passport.authenticate("local")(req,res,function(){
+      res.redirect("/languages");
+    });
+  });
+})
 
+//show login form
+app.get("/login",function(req,res){
+  res.render('login');
+});
 
+app.post("/login", passport.authenticate("local",
+{
+  successRedirect : "/languages",
+  failureRedirect: "/login"
+}),function(req,res){
 
+});
 
+//logic route
+app.get("/logout",function(req,res){
+  req.logout();
+  res.redirect("/languages");
+});
 
-
+function isLoggedIn(req,res,next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
 
 
 
