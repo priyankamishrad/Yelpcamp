@@ -1,16 +1,17 @@
 //eshint jsversion 6
 
-const express       = require('express'),
-      ejs           = require('ejs'),
-      bodyParser    = require('body-parser'),
-      mongoose      = require('mongoose'),
-      seedDB        = require('./seeds'),
-      passport      = require('passport'),
-      LocalStrategy = require('passport-local'),
-      Comment       = require('./models/comment'),
-      Language      = require('./models/languages'),
-      User          = require('./models/user'),
-      app           = express();
+const express         = require('express'),
+      ejs             = require('ejs'),
+      bodyParser      = require('body-parser'),
+      mongoose        = require('mongoose'),
+      methodOverride  = require('method-override'),
+      seedDB          = require('./seeds'),
+      passport        = require('passport'),
+      LocalStrategy   = require('passport-local'),
+      Comment         = require('./models/comment'),
+      Language        = require('./models/languages'),
+      User            = require('./models/user'),
+      app             = express();
 
 //Requiring Routes
 const commentRoutes       = require("./routes/comments"),
@@ -18,12 +19,13 @@ const commentRoutes       = require("./routes/comments"),
       indexRoutes         = require("./routes/index")
 
 
-seedDB();
+//seedDB(); // seed the database
 mongoose.connect('mongodb://localhost/langdb',{useNewUrlParser: true,useUnifiedTopology: true });
 app.use(express.static("public"));
 app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 //PASSPORT CONFIGURATION
 app.use(require('express-session')({

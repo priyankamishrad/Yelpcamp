@@ -1,0 +1,40 @@
+<% include ../partials/header %>
+
+<div class = "container">
+    <h1 class = "text-center"> Edit <%= language.name %> </h1>
+    <div class = "row">
+        <div style = "width:30%; margin: 25px auto">
+            <form method = "post" action = "/languages/<%= language._id %>/edit?_method=PUT">
+            <div class="form-group">
+                <input type="text" class="form-control" name = "newlang" id="newlang" aria-describedby="emailHelp" value ="<%= language.name %>">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" name = "newimg" id="newimg" value ="<%= language.image %>">
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name = "newauth" id="newauth" value ="<%= language.author %>"">
+            </div>
+
+            <div class="form-group">
+                <textarea class="form-control" name="newdesc" rows="3" value ="<%= language.desc %>"></textarea>
+            </div>
+
+            <div class = "form-group">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+            
+            </form>
+
+            <a href = "/languages"> <<< Go Back</a>
+        </div>
+        
+    </div>
+    
+
+    
+
+</div>
+
+
+<% include ../partials/footer %>

@@ -6,7 +6,13 @@ const mongoose = require('mongoose');
 const langSchema = new mongoose.Schema({
     name: String,
     image: String,
-    author: String,
+    author: {
+        id:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        username: String
+    },
     desc : String,
     comments : [
         {
